@@ -6,11 +6,6 @@ ADVENT_INPUT_DIR = "c:/Users/johnb/Documents/GitHub/AOC-2022/advent/input/"
 
 
 def solve_prob_1():
-    # base_path = Path(__file__).parent
-    # file_path = (base_path / "/advent/input/prob1.txt").resolve()
-
-    # file_path = Path(__file__).parent / "/advent/input/prob1.txt"
-
     with open(f"{ADVENT_INPUT_DIR}prob1.txt") as f:
         lines = f.readlines()
         elf_calories = []
@@ -24,20 +19,10 @@ def solve_prob_1():
         for line in lines:
             if line == "\n":
                 elf_calories.append(this_cal)
-                # if this_cal >= most_cal:
-                #     most_third_cal = most_second_cal
-                #     most_second_cal = most_cal
-                #     most_cal = this_cal
                 this_cal = 0
             else:
-                # print(f'adding {line[:-2]}')
                 this_cal += int(line[:-1])
-                # print(f'for a total of {this_cal}')
         elf_calories.append(this_cal)
-        # if this_cal >= most_cal:
-        #     most_third_cal = most_second_cal
-        #     most_second_cal = most_cal
-        #     most_cal = this_cal
 
         most_cal = np.max(elf_calories)
         elf_calories.remove(most_cal)
