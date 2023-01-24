@@ -1,12 +1,8 @@
 import numpy as np
 
-from pathlib import Path
-
-ADVENT_INPUT_DIR = "c:/Users/johnb/Documents/GitHub/AOC-2022/advent/input/"
-
 
 def solve_prob_1():
-    with open(f"{ADVENT_INPUT_DIR}prob1.txt") as f:
+    with open("advent/input/prob1.txt") as f:
         lines = f.readlines()
         elf_calories = []
         most_cal = 0
@@ -44,4 +40,10 @@ def solve_prob_1():
             f"For a total of {most_cal+most_second_cal+most_third_cal} calories!")
 
 
+def solve_prob_2():
+    with open("advent/input/prob2.txt") as f:
+        lines = f.readlines()
+
+
 solve_prob_1()
+# solve_prob_2()
