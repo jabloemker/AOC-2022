@@ -140,6 +140,55 @@ def solve_prob_2b():
             f"I should get a total of {my_score} points with this corrected plan")
 
 
+def solve_prob_3():
+    with open("advent/input/prob3.txt") as f:
+        lines = f.readlines()
+        total_priority = 0
+        badge_priority = 0
+
+        for line in lines:
+            line = line[:-1]  # remove trailing \n
+            rucksize = len(line)
+            if rucksize % 2 != 0:
+                print("bad ruck")
+                return
+            comp_one_ruck = line[:rucksize//2]
+            comp_two_ruck = line[rucksize//2:]
+
+            for char in comp_one_ruck:
+                if char in comp_two_ruck:
+                    total_priority += get_priority(char)
+                    break
+
+        for group_num in range(len(lines)//3):
+            line_one = lines[3*group_num]
+            line_two = lines[3*group_num + 1]
+            line_three = lines[3*group_num + 2]
+
+            for char in line_one:
+                if char in line_two:
+                    if char in line_three:
+                        badge_priority += get_priority(char)
+                        break
+
+            # print(f"comp1 = {comp_one_ruck}\ncomp2 = {comp_two_ruck}")
+        print(f"Total priority is {total_priority}")
+        print(f"Badge priority is {badge_priority}")
+
+
+def get_priority(char):
+    priority_dict = {"a": 1, "b": 2, "c": 3, "d": 4, "e": 5, "f": 6, "g": 7, "h": 8, "i": 9, "j": 10, "k": 11, "l": 12, "m": 13, "n": 14, "o": 15, "p": 16, "q": 17, "r": 18, "s": 19, "t": 20, "u": 21, "v": 22, "w": 23, "x": 24, "y": 25, "z": 26,
+                     "A": 27, "B": 28, "C": 29, "D": 30, "E": 31, "F": 32, "G": 33, "H": 34, "I": 35, "J": 36, "K": 37, "L": 38, "M": 39, "N": 40, "O": 41, "P": 42, "Q": 43, "R": 44, "S": 45, "T": 46, "U": 47, "V": 48, "W": 49, "X": 50, "Y": 51, "Z": 52}
+    return priority_dict[char]
+
+
+def solve_prob_4():
+    with open("advent/input/prob4.txt") as f:
+        lines = f.readlines()
+
+
 #### run solve_prob() ####
 # solve_prob_1()
-solve_prob_2b()
+# solve_prob_2b()
+# solve_prob_3()
+solve_prob_4()
