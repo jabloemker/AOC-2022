@@ -186,6 +186,42 @@ def solve_prob_4():
     with open("advent/input/prob4.txt") as f:
         lines = f.readlines()
 
+        fully_contained_pairs = 0
+        overlapping_pairs = 0
+
+        for line in lines:
+            elf_one, elf_two = line[:-1].split(',')
+            elf_one_min, elf_one_max = elf_one.split('-')
+            elf_two_min, elf_two_max = elf_two.split('-')
+
+            elf_one_min = int(elf_one_min)
+            elf_one_max = int(elf_one_max)
+            elf_two_min = int(elf_two_min)
+            elf_two_max = int(elf_two_max)
+            elf_one_range = range(elf_one_min, elf_one_max+1)
+            elf_two_range = range(elf_two_min, elf_two_max+1)
+
+            range_one = elf_one_max - elf_one_min
+            range_two = elf_two_max - elf_two_min
+
+            if range_one > range_two:
+                if elf_two_max <= elf_one_max and elf_two_min >= elf_one_min:
+                    fully_contained_pairs += 1
+                for i in elf_two_range:
+                    if i in elf_one_range:
+                        overlapping_pairs += 1
+                        break
+            else:
+                if elf_two_max >= elf_one_max and elf_two_min <= elf_one_min:
+                    fully_contained_pairs += 1
+                for i in elf_one_range:
+                    if i in elf_two_range:
+                        overlapping_pairs += 1
+                        break
+
+        print(f"There are a total of {fully_contained_pairs} bad pairs")
+        print(f"There are a total of {overlapping_pairs} overlapping pairs")
+
 
 #### run solve_prob() ####
 # solve_prob_1()
