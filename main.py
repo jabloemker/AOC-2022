@@ -234,7 +234,7 @@ def solve_prob_5():
         stack_five = ['G', 'L', 'F', 'Q', 'S']
         stack_six = ['V', 'P', 'W', 'Z', 'B', 'R', 'C', 'S']
         stack_seven = ['Z', 'F', 'J']
-        stack_eight = ['D', 'L', 'V', '', 'R', 'H', 'Q']
+        stack_eight = ['D', 'L', 'V', 'Z', 'R', 'H', 'Q']
         stack_nine = ['B', 'H', 'G', 'N', 'F', 'Z', 'L', 'D']
 
         stack_dict = {1: stack_one, 2: stack_two, 3: stack_three, 4: stack_four,
@@ -267,7 +267,7 @@ def solve_prob_5b():
         stack_five = ['G', 'L', 'F', 'Q', 'S']
         stack_six = ['V', 'P', 'W', 'Z', 'B', 'R', 'C', 'S']
         stack_seven = ['Z', 'F', 'J']
-        stack_eight = ['D', 'L', 'V', '', 'R', 'H', 'Q']
+        stack_eight = ['D', 'L', 'V', 'Z', 'R', 'H', 'Q']
         stack_nine = ['B', 'H', 'G', 'N', 'F', 'Z', 'L', 'D']
 
         stack_dict = {1: stack_one, 2: stack_two, 3: stack_three, 4: stack_four,
@@ -306,8 +306,40 @@ def solve_prob_5b():
 
 
 def solve_prob_6():
-    with open("advent/input/prob6.txt") as f:
-        lines = f.readlines()
+    with open("advent/input/prob6.txt", "r") as f:
+        datastream = f.readline()
+        # print(datastream)
+
+        MARKER_SIZE = 4
+        MSG_MARKER_SIZE = 14
+        found_packet = False
+        found_msg = False
+
+        for i in range(len(datastream)-MARKER_SIZE):
+            packet = datastream[i:i+MARKER_SIZE]
+            # print(packet)
+            for char in packet:
+                if packet.count(char) > 1:
+                    break
+            else:
+                print(f"starting packet is {packet}")
+                found_packet = True
+            if found_packet:
+                print(f"need to process {i+MARKER_SIZE} characters")
+                break
+
+        for i in range(len(datastream)-MSG_MARKER_SIZE):
+            packet = datastream[i:i+MSG_MARKER_SIZE]
+            # print(packet)
+            for char in packet:
+                if packet.count(char) > 1:
+                    break
+            else:
+                print(f"message packet is {packet}")
+                found_msg = True
+            if found_msg:
+                print(f"need to process {i+MSG_MARKER_SIZE} characters")
+                break
 
 
 #### run solve_prob() ####
