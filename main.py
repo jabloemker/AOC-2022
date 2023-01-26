@@ -223,8 +223,98 @@ def solve_prob_4():
         print(f"There are a total of {overlapping_pairs} overlapping pairs")
 
 
+def solve_prob_5():
+    with open("advent/input/prob5-format.txt") as f:
+        lines = f.readlines()
+
+        stack_one = ["H", "T", "Z", "D"]
+        stack_two = ["Q", "R", "W", "T", "G", "C", "S"]
+        stack_three = ["P", "B", "F", "Q", "N", "R", "C", "H"]
+        stack_four = ['L', 'C', 'N', 'F', 'H', 'Z']
+        stack_five = ['G', 'L', 'F', 'Q', 'S']
+        stack_six = ['V', 'P', 'W', 'Z', 'B', 'R', 'C', 'S']
+        stack_seven = ['Z', 'F', 'J']
+        stack_eight = ['D', 'L', 'V', '', 'R', 'H', 'Q']
+        stack_nine = ['B', 'H', 'G', 'N', 'F', 'Z', 'L', 'D']
+
+        stack_dict = {1: stack_one, 2: stack_two, 3: stack_three, 4: stack_four,
+                      5: stack_five, 6: stack_six, 7: stack_seven, 8: stack_eight, 9: stack_nine}
+
+        for line in lines:
+            vars = line.split()
+            num_to_move = int(vars[1])
+            stack_from = stack_dict[int(vars[3])]
+            stack_to = stack_dict[int(vars[5])]
+            for i in range(num_to_move):
+                crate = stack_from.pop()
+                stack_to.append(crate)
+
+        final_crate_msg = ""
+        for i in range(1, 10):
+            final_crate_msg += stack_dict[i][-1]
+
+        print(f"The top crates spell the message {final_crate_msg}")
+
+
+def solve_prob_5b():
+    with open("advent/input/prob5-format.txt") as f:
+        lines = f.readlines()
+
+        stack_one = ["H", "T", "Z", "D"]
+        stack_two = ["Q", "R", "W", "T", "G", "C", "S"]
+        stack_three = ["P", "B", "F", "Q", "N", "R", "C", "H"]
+        stack_four = ['L', 'C', 'N', 'F', 'H', 'Z']
+        stack_five = ['G', 'L', 'F', 'Q', 'S']
+        stack_six = ['V', 'P', 'W', 'Z', 'B', 'R', 'C', 'S']
+        stack_seven = ['Z', 'F', 'J']
+        stack_eight = ['D', 'L', 'V', '', 'R', 'H', 'Q']
+        stack_nine = ['B', 'H', 'G', 'N', 'F', 'Z', 'L', 'D']
+
+        stack_dict = {1: stack_one, 2: stack_two, 3: stack_three, 4: stack_four,
+                      5: stack_five, 6: stack_six, 7: stack_seven, 8: stack_eight, 9: stack_nine}
+
+        counter = 0
+
+        for line in lines:
+            vars = line.split()
+            num_to_move = int(vars[1])
+            stack_from = stack_dict[int(vars[3])]
+            stack_to = stack_dict[int(vars[5])]
+
+            # print(line[:-1])
+            # print(f"moving from {stack_from} to {stack_to}")
+
+            crates_moving = stack_from[len(stack_from)-num_to_move:]
+            # print(f"moving {crates_moving}")
+            for crate in crates_moving:
+                stack_from.reverse()
+                stack_from.remove(crate)
+                stack_from.reverse()
+                stack_to.append(crate)
+            # print(f"moved from {stack_from} to {stack_to}\n")
+
+            # counter += 1
+            # if counter > 5:
+            #     break
+
+        final_crate_msg = ""
+        for i in range(1, 10):
+            # if len(stack_dict[i]) > 0:
+            final_crate_msg += stack_dict[i][-1]
+
+        print(f"The top crates spell the message {final_crate_msg}")
+
+
+def solve_prob_6():
+    with open("advent/input/prob6.txt") as f:
+        lines = f.readlines()
+
+
 #### run solve_prob() ####
 # solve_prob_1()
 # solve_prob_2b()
 # solve_prob_3()
-solve_prob_4()
+# solve_prob_4()
+# solve_prob_5()
+# solve_prob_5b()
+solve_prob_6()
