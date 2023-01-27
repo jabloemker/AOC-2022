@@ -342,6 +342,53 @@ def solve_prob_6():
                 break
 
 
+class Dir:
+    def __init__(self, name, parent):
+        self.name = name
+        self.parent = parent
+        self.contained_files = []
+        self.contained_dirs = []
+
+
+class File:
+    def __init__(self, size, name, parent):
+        self.size = size
+        self.name = name
+        self.parent = parent
+
+
+def get_dir(name, starting_dir):
+    if starting_dir.name == name:
+        return starting_dir
+
+
+def solve_prob_7():
+    with open("advent/input/prob7.txt", "r") as f:
+        lines = f.readlines()
+
+        forward_slash = Dir("/", None)
+        cur_dir = "/"
+        line = f.readline()
+
+        while line:
+            term_disp = line.split()
+            if term_disp[0] == "$":
+                if term_disp[1] == "cd":
+                    cur_dir = term_disp[2]
+                elif term_disp[1] == "ls":
+                    # list files
+                    line = f.readline()
+                    if not line:
+                        break
+                    term_disp = line.split()
+                    if term_disp[0] == "dir":
+                        dir
+
+                else:
+                    print(f"unknown command - {term_disp[1]}")
+                    return
+
+
 #### run solve_prob() ####
 # solve_prob_1()
 # solve_prob_2b()
@@ -349,4 +396,5 @@ def solve_prob_6():
 # solve_prob_4()
 # solve_prob_5()
 # solve_prob_5b()
-solve_prob_6()
+# solve_prob_6()
+solve_prob_7()
