@@ -386,7 +386,8 @@ class myPwd:
         print(f"sum of deletable dirs is {total_to_del}")
 
     def space_for_update(self):
-        unused_space = self.TOTAL_DISK_SPACE - self.dir_sizes["/"]
+        unused_space = self.TOTAL_DISK_SPACE - \
+            self.dir_sizes[self.starting_dir]
         space_needed = self.FREE_SPACE_NEEDED - unused_space
         min_dir_size = self.TOTAL_DISK_SPACE
         for size in self.dir_sizes.values():
@@ -406,7 +407,7 @@ def solve_prob_7():
             if term_disp[0] == "$":
                 if term_disp[1] == "cd":
                     thisPwd.change_dir(term_disp[2])
-                    print(thisPwd.pwd)
+                    # print(thisPwd.pwd)
                 elif term_disp[1] == "ls":
                     # list files
                     pass
@@ -421,9 +422,155 @@ def solve_prob_7():
                 print(f"unknown line - {line}")
                 print(f"term - {term_disp[0]} and int - {int(term_disp[0])}")
 
-        print(thisPwd.dir_sizes)
+        # print(thisPwd.dir_sizes)
         thisPwd.deletable_files()
         thisPwd.space_for_update()
+
+
+class treeCount:
+    def __init__(self):
+        self.treelist = []
+        self.tree_grid = []
+
+    def add_tree(self, tree_coord):
+        if tree_coord not in self.treelist:
+            self.treelist.append(tree_coord)
+
+    def is_visible(self, tree_coord):
+        y, x = tree_coord
+        tree_height = self.tree_grid[y][x]
+
+        for j in range(0, y):
+            if self.tree_grid[j][x] >= tree_height:
+                break
+        else:
+            return True
+
+        for j in range(y+1, len(self.tree_grid)):
+            if self.tree_grid[j][x] >= tree_height:
+                break
+        else:
+            return True
+
+        for i in range(0, x):
+            if self.tree_grid[y][i] >= tree_height:
+                break
+        else:
+            return True
+
+        for i in range(x+1, len(self.tree_grid)):
+            if self.tree_grid[y][i] >= tree_height:
+                break
+        else:
+            return True
+
+        return False
+
+    def scenic_score(self, tree_coord):
+        y, x = tree_coord
+        tree_height = self.tree_grid[y][x]
+
+        up_view = left_view = right_view = down_view = 0
+
+        if y != 0:
+            for j in range(y-1, -1, -1):
+                if self.tree_grid[j][x] >= tree_height:
+                    up_view += 1
+                    break
+                else:
+                    # if self.tree_grid[j][x] != 0:
+                    up_view += 1
+
+        for j in range(y+1, len(self.tree_grid)):
+            if self.tree_grid[j][x] >= tree_height:
+                down_view += 1
+                break
+            else:
+                # if self.tree_grid[j][x] != 0:
+                down_view += 1
+
+        if x != 0:
+            for i in range(x-1, -1, -1):
+                if self.tree_grid[y][i] >= tree_height:
+                    left_view += 1
+                    break
+                else:
+                    # if self.tree_grid[y][i] != 0:
+                    left_view += 1
+
+        for i in range(x+1, len(self.tree_grid)):
+            if self.tree_grid[y][i] >= tree_height:
+                right_view += 1
+                break
+            else:
+                # if self.tree_grid[y][i] != 0:
+                right_view += 1
+
+        scenic_score = up_view*right_view*left_view*down_view
+        # print(
+        #     f"view up: {up_view} - view right: {right_view} - view left: {left_view} - view down: {down_view}")
+        # print(f"scenic socre of {scenic_score}")
+        return scenic_score
+
+    def count(self):
+        return(len(self.treelist))
+
+    def print_count(self):
+        print(f"Number of visible trees is {self.count()}")
+
+
+def print_grid(grid):
+    # taks grid as input, a list of lists i.e [[0,1,2],[3,4,5],[6,7,8]]
+    for row in grid:
+        print(row)
+
+
+def on_edge(coord_pair, grid_size):
+    a, b = coord_pair
+    size_a, size_b = grid_size
+    if a == 0 or b == 0:
+        return True
+    elif a == size_a-1 or b == size_b-1:
+        return True
+    else:
+        return False
+
+
+def solve_prob_8():
+    with open("advent/input/prob8.txt", "r") as f:
+        lines = f.readlines()
+        trees = treeCount()
+        trees.tree_grid = []
+        grid_row = 0
+        for line in lines:
+            trees.tree_grid.append([])
+            for tree in line:
+                if tree != "\n":
+                    trees.tree_grid[grid_row].append(int(tree))
+            grid_row += 1
+        # print_grid(trees.tree_grid)
+
+        for y in range(len(trees.tree_grid)):
+            for x in range(len(trees.tree_grid[y])):
+                tree_coord = (y, x)
+                if on_edge(tree_coord, (len(trees.tree_grid), len(trees.tree_grid[y]))):
+                    trees.add_tree(tree_coord)
+                if trees.is_visible(tree_coord):
+                    trees.add_tree(tree_coord)
+
+        # print(
+        #      f"grid size should be {len(tree_grid)} x {len(tree_grid[0])} with a border of {2*len(tree_grid)+2*len(tree_grid[0])-4}")
+        trees.print_count()
+
+        max_scenic_score = 0
+        for y in range(len(trees.tree_grid)):
+            for x in range(len(trees.tree_grid[y])):
+                if trees.tree_grid[y][x] != 0:
+                    score = trees.scenic_score((y, x))
+                    if score > max_scenic_score:
+                        max_scenic_score = score
+
+        print(f"max scenic score is {max_scenic_score}")
 
 
 #### run solve_prob() ####
@@ -434,4 +581,5 @@ def solve_prob_7():
 # solve_prob_5()
 # solve_prob_5b()
 # solve_prob_6()
-solve_prob_7()
+# solve_prob_7()
+solve_prob_8()
