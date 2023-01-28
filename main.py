@@ -342,51 +342,88 @@ def solve_prob_6():
                 break
 
 
-class Dir:
-    def __init__(self, name, parent):
-        self.name = name
-        self.parent = parent
-        self.contained_files = []
-        self.contained_dirs = []
+class myPwd:
+    SIZE_MAX = 100000
+    TOTAL_DISK_SPACE = 70000000
+    FREE_SPACE_NEEDED = 30000000
+    FILE_SEP = ">"
 
+    def __init__(self, starting_dir):
+        self.starting_dir = starting_dir
+        self.pwd = starting_dir
+        self.dir_sizes = {starting_dir: 0}
 
-class File:
-    def __init__(self, size, name, parent):
-        self.size = size
-        self.name = name
-        self.parent = parent
+    def change_dir(self, dir_name):
+        pwd_dirs = self.pwd.split(self.FILE_SEP)
+        if dir_name == "..":
+            self.pwd = self.FILE_SEP.join(pwd_dirs[:-1])
+        else:
+            # print(pwd_dirs)
+            pwd_dirs.append(dir_name)
+            # print(pwd_dirs)
+            self.pwd = self.FILE_SEP.join(pwd_dirs)
 
+    def cur_dir(self):
+        pwd_dirs = self.pwd.split(self.FILE_SEP)
+        return pwd_dirs[-1]
 
-def get_dir(name, starting_dir):
-    if starting_dir.name == name:
-        return starting_dir
+    def count_file_size(self, file_size):
+        pwd_dirs = self.pwd.split(self.FILE_SEP)
+        for i in range(len(pwd_dirs)):
+            self.dir_sizes[self.FILE_SEP.join(pwd_dirs)] += file_size
+            pwd_dirs.pop()
+
+    def add_dir(self, dir_name):
+        new_path = self.pwd.split(self.FILE_SEP)
+        new_path.append(dir_name)
+        self.dir_sizes.update({self.FILE_SEP.join(new_path): 0})
+
+    def deletable_files(self):
+        total_to_del = 0
+        for size in self.dir_sizes.values():
+            if size <= self.SIZE_MAX:
+                total_to_del += size
+        print(f"sum of deletable dirs is {total_to_del}")
+
+    def space_for_update(self):
+        unused_space = self.TOTAL_DISK_SPACE - self.dir_sizes["/"]
+        space_needed = self.FREE_SPACE_NEEDED - unused_space
+        min_dir_size = self.TOTAL_DISK_SPACE
+        for size in self.dir_sizes.values():
+            if size > space_needed and size < min_dir_size:
+                min_dir_size = size
+        print(f"smallest dir size to delete - {min_dir_size}")
 
 
 def solve_prob_7():
-    with open("advent/input/prob7.txt", "r") as f:
+    with open("advent/input/prob7-format.txt", "r") as f:
+        thisPwd = myPwd("/")
         lines = f.readlines()
 
-        forward_slash = Dir("/", None)
-        cur_dir = "/"
-        line = f.readline()
-
-        while line:
+        for line in lines:
+            # line = line[:-1]  # trim trailing \n
             term_disp = line.split()
             if term_disp[0] == "$":
                 if term_disp[1] == "cd":
-                    cur_dir = term_disp[2]
+                    thisPwd.change_dir(term_disp[2])
+                    print(thisPwd.pwd)
                 elif term_disp[1] == "ls":
                     # list files
-                    line = f.readline()
-                    if not line:
-                        break
-                    term_disp = line.split()
-                    if term_disp[0] == "dir":
-                        dir
-
+                    pass
                 else:
                     print(f"unknown command - {term_disp[1]}")
                     return
+            elif term_disp[0] == "dir":
+                thisPwd.add_dir(term_disp[1])
+            elif term_disp[0].isdigit():
+                thisPwd.count_file_size(int(term_disp[0]))
+            else:
+                print(f"unknown line - {line}")
+                print(f"term - {term_disp[0]} and int - {int(term_disp[0])}")
+
+        print(thisPwd.dir_sizes)
+        thisPwd.deletable_files()
+        thisPwd.space_for_update()
 
 
 #### run solve_prob() ####
