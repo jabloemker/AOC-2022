@@ -632,31 +632,172 @@ class PlanckRope:
         self.head_coord = (x, y+1)
         self.update_tail()
         self.record_tail_pos()
-        self.print_coords()
+        # self.print_coords()
 
     def move_down(self):
         x, y = self.head_coord
         self.head_coord = (x, y-1)
         self.update_tail()
         self.record_tail_pos()
-        self.print_coords()
+        # self.print_coords()
 
     def move_left(self):
         x, y = self.head_coord
         self.head_coord = (x-1, y)
         self.update_tail()
         self.record_tail_pos()
-        self.print_coords()
+        # self.print_coords()
 
     def move_right(self):
         x, y = self.head_coord
         self.head_coord = (x+1, y)
         self.update_tail()
         self.record_tail_pos()
-        self.print_coords()
+        # self.print_coords()
 
     def print_coords(self):
         print(f"head is at {self.head_coord} and tail is at {self.tail_coord}")
+
+
+class SnakeRope:
+    def __init__(self):
+        self.tail_positions = []
+        self.head_coord = (0, 0)
+        self.tail_coord = (0, 0)
+
+    def update_tail(self):
+        xh, yh = self.head_coord
+        xt, yt = self.tail_coord
+
+        if (abs(xh-xt) > 1) and yt == yh:
+            # y axis is lined up, x axis is off by 2
+            if xh-xt < 0:
+                self.tail_coord = (xt-1, yt)
+            else:
+                self.tail_coord = (xt+1, yt)
+        elif (abs(yh-yt) > 1) and xt == xh:
+            if yh-yt < 0:
+                self.tail_coord = (xt, yt-1)
+            else:
+                self.tail_coord = (xt, yt+1)
+        elif abs(yh-yt) > 0 and abs(xh-xt) > 0:
+            if abs(xh-xt) > 1 and abs(yh-yt) == 1:
+                if yh-yt < 0:
+                    # move tail down
+                    if xh-xt < 0:
+                        self.tail_coord = (xt-1, yt-1)
+                    else:
+                        self.tail_coord = (xt+1, yt-1)
+                else:
+                    if xh-xt < 0:
+                        self.tail_coord = (xt-1, yt+1)
+                    else:
+                        self.tail_coord = (xt+1, yt+1)
+            elif abs(yh-yt) > 1 and abs(xh-xt) == 1:
+                if xh-xt < 0:
+                    if yh-yt < 0:
+                        self.tail_coord = (xt-1, yt-1)
+                    else:
+                        self.tail_coord = (xt-1, yt+1)
+                else:
+                    if yh-yt < 0:
+                        self.tail_coord = (xt+1, yt-1)
+                    else:
+                        self.tail_coord = (xt+1, yt+1)
+            elif abs(yh-yt) == 2 and abs(xh-xt) == 2:
+                if yh-yt > 0 and xh-xt > 0:
+                    self.tail_coord = (xt+1, yt+1)
+                elif yh-yt > 0 and xh-xt < 0:
+                    self.tail_coord = (xt-1, yt+1)
+                elif yh-yt < 0 and xh-xt > 0:
+                    self.tail_coord = (xt+1, yt-1)
+                elif yh-yt < 0 and xh-xt < 0:
+                    self.tail_coord = (xt-1, yt-1)
+            # else:
+            #     print("unexpected snake position")
+            #     return
+
+    def record_tail_pos(self):
+        if self.tail_coord not in self.tail_positions:
+            self.tail_positions.append(self.tail_coord)
+
+    def count_tail_pos(self):
+        total = len(self.tail_positions)
+        print(f"The tail has visited {total} total positions")
+
+    def move_up(self):
+        x, y = self.head_coord
+        self.head_coord = (x, y+1)
+        self.update_tail()
+        self.record_tail_pos()
+        # self.print_coords()
+
+    def move_down(self):
+        x, y = self.head_coord
+        self.head_coord = (x, y-1)
+        self.update_tail()
+        self.record_tail_pos()
+        # self.print_coords()
+
+    def move_left(self):
+        x, y = self.head_coord
+        self.head_coord = (x-1, y)
+        self.update_tail()
+        self.record_tail_pos()
+        # self.print_coords()
+
+    def move_right(self):
+        x, y = self.head_coord
+        self.head_coord = (x+1, y)
+        self.update_tail()
+        self.record_tail_pos()
+        # self.print_coords()
+
+    def set_head(self, coord):
+        self.head_coord = coord
+        self.update_tail()
+        self.record_tail_pos()
+
+    def tail(self):
+        return self.tail_coord
+
+    def head(self):
+        return self.head_coord
+
+    def print_coords(self):
+        print(f"head is at {self.head_coord} and tail is at {self.tail_coord}")
+
+
+def move_snake(snake_chain):
+    for i in range(len(snake_chain)-1):
+        snake_chain[i+1].set_head(snake_chain[i].tail())
+
+    # display_snake(snake_chain)
+
+
+def display_snake(snake_chain):
+    snake_points = []
+    output_str = ""
+    for n in range(len(snake_chain)):
+        if n == 0:
+            snake_points.append(snake_chain[n].head())
+        snake_points.append(snake_chain[n].tail())
+
+    for i in range(-5, 15):
+        for j in range(-11, 14):
+            this_point = (j, i)
+            if this_point in snake_points:
+                snake_point = snake_points.index(this_point)
+                if snake_point == 0:
+                    snake_point = "H"
+                else:
+                    snake_point = str(snake_point)
+                output_str += snake_point
+            else:
+                output_str += "."
+        output_str += "\n"
+
+    print(output_str)
 
 
 def solve_prob_9():
@@ -664,28 +805,42 @@ def solve_prob_9():
         lines = f.readlines()
 
         rope = PlanckRope()
-        rope.print_coords()
+        # rope.print_coords()
+
+        snake_chain = [SnakeRope(), SnakeRope(), SnakeRope(), SnakeRope(
+        ), SnakeRope(), SnakeRope(), SnakeRope(), SnakeRope(), SnakeRope()]
 
         for line in lines:
             cmd, amount = line.split()
             if cmd == "D":
                 for i in range(int(amount)):
                     rope.move_down()
+                    snake_chain[0].move_down()
+                    move_snake(snake_chain)
             elif cmd == "U":
                 for i in range(int(amount)):
                     rope.move_up()
+                    snake_chain[0].move_up()
+                    move_snake(snake_chain)
             elif cmd == "R":
                 for i in range(int(amount)):
                     rope.move_right()
+                    snake_chain[0].move_right()
+                    move_snake(snake_chain)
             elif cmd == "L":
                 for i in range(int(amount)):
                     rope.move_left()
+                    snake_chain[0].move_left()
+                    move_snake(snake_chain)
             else:
                 print("unknown command")
                 return
+            # display_snake(snake_chain)
 
         # print(rope.tail_positions)
         rope.count_tail_pos()
+        print("long snake version:")
+        snake_chain[-1].count_tail_pos()
 
 
 #### run solve_prob() ####
