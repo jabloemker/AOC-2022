@@ -573,6 +573,121 @@ def solve_prob_8():
         print(f"max scenic score is {max_scenic_score}")
 
 
+class PlanckRope:
+    def __init__(self):
+        self.tail_positions = []
+        self.head_coord = (0, 0)
+        self.tail_coord = (0, 0)
+
+    def update_tail(self):
+        xh, yh = self.head_coord
+        xt, yt = self.tail_coord
+
+        if (abs(xh-xt) > 1) and yt == yh:
+            # y axis is lined up, x axis is off by 2
+            if xh-xt < 0:
+                self.tail_coord = (xt-1, yt)
+            else:
+                self.tail_coord = (xt+1, yt)
+        elif (abs(yh-yt) > 1) and xt == xh:
+            if yh-yt < 0:
+                self.tail_coord = (xt, yt-1)
+            else:
+                self.tail_coord = (xt, yt+1)
+        elif abs(yh-yt) > 0 and abs(xh-xt) > 0:
+            if abs(xh-xt) > 1 and abs(yh-yt) == 1:
+                if yh-yt < 0:
+                    # move tail down
+                    if xh-xt < 0:
+                        self.tail_coord = (xt-1, yt-1)
+                    else:
+                        self.tail_coord = (xt+1, yt-1)
+                else:
+                    if xh-xt < 0:
+                        self.tail_coord = (xt-1, yt+1)
+                    else:
+                        self.tail_coord = (xt+1, yt+1)
+            elif abs(yh-yt) > 1 and abs(xh-xt) == 1:
+                if xh-xt < 0:
+                    if yh-yt < 0:
+                        self.tail_coord = (xt-1, yt-1)
+                    else:
+                        self.tail_coord = (xt-1, yt+1)
+                else:
+                    if yh-yt < 0:
+                        self.tail_coord = (xt+1, yt-1)
+                    else:
+                        self.tail_coord = (xt+1, yt+1)
+
+    def record_tail_pos(self):
+        if self.tail_coord not in self.tail_positions:
+            self.tail_positions.append(self.tail_coord)
+
+    def count_tail_pos(self):
+        total = len(self.tail_positions)
+        print(f"The tail has visited {total} total positions")
+
+    def move_up(self):
+        x, y = self.head_coord
+        self.head_coord = (x, y+1)
+        self.update_tail()
+        self.record_tail_pos()
+        self.print_coords()
+
+    def move_down(self):
+        x, y = self.head_coord
+        self.head_coord = (x, y-1)
+        self.update_tail()
+        self.record_tail_pos()
+        self.print_coords()
+
+    def move_left(self):
+        x, y = self.head_coord
+        self.head_coord = (x-1, y)
+        self.update_tail()
+        self.record_tail_pos()
+        self.print_coords()
+
+    def move_right(self):
+        x, y = self.head_coord
+        self.head_coord = (x+1, y)
+        self.update_tail()
+        self.record_tail_pos()
+        self.print_coords()
+
+    def print_coords(self):
+        print(f"head is at {self.head_coord} and tail is at {self.tail_coord}")
+
+
+def solve_prob_9():
+    with open("advent/input/prob9.txt", "r") as f:
+        lines = f.readlines()
+
+        rope = PlanckRope()
+        rope.print_coords()
+
+        for line in lines:
+            cmd, amount = line.split()
+            if cmd == "D":
+                for i in range(int(amount)):
+                    rope.move_down()
+            elif cmd == "U":
+                for i in range(int(amount)):
+                    rope.move_up()
+            elif cmd == "R":
+                for i in range(int(amount)):
+                    rope.move_right()
+            elif cmd == "L":
+                for i in range(int(amount)):
+                    rope.move_left()
+            else:
+                print("unknown command")
+                return
+
+        # print(rope.tail_positions)
+        rope.count_tail_pos()
+
+
 #### run solve_prob() ####
 # solve_prob_1()
 # solve_prob_2b()
@@ -582,4 +697,5 @@ def solve_prob_8():
 # solve_prob_5b()
 # solve_prob_6()
 # solve_prob_7()
-solve_prob_8()
+# solve_prob_8()
+solve_prob_9()
