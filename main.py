@@ -843,6 +843,70 @@ def solve_prob_9():
         snake_chain[-1].count_tail_pos()
 
 
+class VideoDriver:
+    CRT_WIDTH = 40
+    CRT_ROWS = 6
+
+    def __init__(self):
+        self.cycle = 0
+        self.x_val = 1
+        self.x_standby = 0
+        self.report_logs = []
+        self.crt_display = []
+        self.crt_row = 0
+        self.crt_pointer = 0
+        for i in range(self.CRT_ROWS):
+            self.crt_display.append(["."]*self.CRT_WIDTH)
+
+    def run_cycle(self, add):
+
+        if abs(self.crt_pointer - self.x_val) <= 1:
+            # print("#")
+            self.crt_display[self.crt_row][self.crt_pointer] = "#"
+        self.x_val += self.x_standby
+        self.x_standby = add
+        self.crt_pointer += 1
+        if self.crt_pointer % self.CRT_WIDTH == 0:
+            self.crt_row += 1
+            self.crt_pointer = 0
+        self.cycle += 1
+        if(self.cycle - 19) % 39 == 0:
+            self.report()
+
+    def report(self):
+        signal_strength = (self.cycle+1)*self.x_val
+        print(
+            f"{self.cycle} cycles completed, X = {self.x_val}, signal strentgh: {signal_strength}")
+        self.report_logs.append(signal_strength)
+
+    def final_report(self):
+        total_signal = sum(self.report_logs)
+        print(f"Sum of all signal strengths: {total_signal}")
+
+    def print_display(self):
+        for row in self.crt_display:
+            print("".join(row))
+
+
+def solve_prob_10():
+    with open("advent/input/prob10.txt", "r") as f:
+        lines = f.readlines()
+        vd = VideoDriver()
+
+        for line in lines:
+            line_cmd = line.split()
+            if line_cmd[0] == "noop":
+                # print("noop if")
+                vd.run_cycle(0)
+            elif line_cmd[0] == "addx":
+                # print(line_cmd)
+                vd.run_cycle(int(line_cmd[1]))
+                vd.run_cycle(0)
+
+        vd.final_report()
+        vd.print_display()
+
+
 #### run solve_prob() ####
 # solve_prob_1()
 # solve_prob_2b()
@@ -853,4 +917,5 @@ def solve_prob_9():
 # solve_prob_6()
 # solve_prob_7()
 # solve_prob_8()
-solve_prob_9()
+# solve_prob_9()
+solve_prob_10()
