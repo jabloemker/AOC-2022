@@ -907,6 +907,84 @@ def solve_prob_10():
         vd.print_display()
 
 
+class Monkey:
+    def __init__(self, item_list, op_func, test_func, test_true, test_false):
+        self.items = item_list
+        self.operation = op_func
+        self.test = test_func
+        self.throw_true = test_true
+        self.throw_false = test_false
+        self.inspect_count = 0
+
+    def __str__(self):
+        return str(self.items)
+
+    def inspect_item(self):
+        item = self.items[0]
+        # print(item)
+        item = self.operation(item)
+        # print(item)
+        # item = item // 3
+        # print(item)
+        self.items = self.items[1:]
+        self.inspect_count += 1
+        if self.test(item) == 0:
+            # print("divisible")
+            return (self.throw_true, item)
+        else:
+            # print("not")
+            return (self.throw_false, item)
+
+
+def solve_prob_11():
+    NUM_ROUNDS = 20
+
+    monkeys = [
+        Monkey([77, 69, 76, 77, 50, 58],
+               lambda x: x*11, lambda x: x % 5, 1, 5),
+        Monkey([75, 70, 82, 83, 96, 64, 62],
+               lambda x: x+8, lambda x: x % 17, 5, 6),
+        Monkey([53], lambda x: x*3, lambda x: x % 2, 0, 7),
+        Monkey([85, 64, 93, 64, 99], lambda x: x+4, lambda x: x % 7, 7, 2),
+        Monkey([61, 92, 71], lambda x: x*x, lambda x: x % 3, 2, 3),
+        Monkey([79, 73, 50, 90], lambda x: x+2, lambda x: x % 11, 4, 6),
+        Monkey([50, 89], lambda x: x+3, lambda x: x % 13, 4, 3),
+        Monkey([83, 56, 64, 58, 93, 91, 56, 65],
+               lambda x: x+5, lambda x: x % 19, 1, 0)
+    ]
+
+    test_monkeys = [
+        Monkey([79, 98], lambda x:x*19, lambda x: x % 23, 2, 3),
+        Monkey([54, 65, 75, 74], lambda x:x+6, lambda x:x % 19, 2, 0),
+        Monkey([79, 60, 97], lambda x:x*x, lambda x: x % 13, 1, 3),
+        Monkey([74], lambda x: x+3, lambda x: x % 17, 0, 1)
+    ]
+
+    # for monkey in test_monkeys:
+    #     while monkey.items:
+    #         new_monkey, item = monkey.inspect_item()
+    #         test_monkeys[new_monkey].items.append(item)
+
+    for i in range(NUM_ROUNDS):
+        for monkey in monkeys:
+            while monkey.items:
+                new_monkey, item = monkey.inspect_item()
+                monkeys[new_monkey].items.append(item)
+
+    for i in range(len(monkeys)):
+        print(f"Monkey {i} - {monkeys[i].items}")
+
+    inspection_counts = []
+    for monkey in monkeys:
+        inspection_counts.append(monkey.inspect_count)
+    top_monkey = max(inspection_counts)
+    inspection_counts.remove(top_monkey)
+    second_monkey = max(inspection_counts)
+
+    print(
+        f"Total monkey business afer {NUM_ROUNDS} rounds is {top_monkey*second_monkey}")
+
+
 #### run solve_prob() ####
 # solve_prob_1()
 # solve_prob_2b()
@@ -918,4 +996,5 @@ def solve_prob_10():
 # solve_prob_7()
 # solve_prob_8()
 # solve_prob_9()
-solve_prob_10()
+# solve_prob_10()
+solve_prob_11()
