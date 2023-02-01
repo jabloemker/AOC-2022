@@ -915,6 +915,8 @@ class Monkey:
         self.throw_true = test_true
         self.throw_false = test_false
         self.inspect_count = 0
+        self.test_common_multiple = 5*17*2*7*3*11*13*19
+        # self.test_common_multiple = 23*19*13*17
 
     def __str__(self):
         return str(self.items)
@@ -928,6 +930,7 @@ class Monkey:
         # print(item)
         self.items = self.items[1:]
         self.inspect_count += 1
+        item %= self.test_common_multiple
         if self.test(item) == 0:
             # print("divisible")
             return (self.throw_true, item)
@@ -937,7 +940,7 @@ class Monkey:
 
 
 def solve_prob_11():
-    NUM_ROUNDS = 20
+    NUM_ROUNDS = 10000
 
     monkeys = [
         Monkey([77, 69, 76, 77, 50, 58],
@@ -982,7 +985,7 @@ def solve_prob_11():
     second_monkey = max(inspection_counts)
 
     print(
-        f"Total monkey business afer {NUM_ROUNDS} rounds is {top_monkey*second_monkey}")
+        f"Total monkey business afer {NUM_ROUNDS} rounds is {top_monkey} * {second_monkey} = {top_monkey*second_monkey}")
 
 
 #### run solve_prob() ####
